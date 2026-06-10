@@ -1,0 +1,24 @@
+#python
+__pycche__/
+*.py[cod]
+*$py.class
+*.so
+.python
+venv/
+env/
+ENV/
+*.egg-info/
+Django
+*.log
+db.sqlite3
+media/
+staticfiles/
+local_settings.py
+IDE
+.vscode
+.idea/
+*.swp
+*.swo
+*~
+Environment Variables
+.env
