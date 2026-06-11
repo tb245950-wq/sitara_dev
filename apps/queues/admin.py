@@ -7,15 +7,16 @@ class AntrianAdmin(admin.ModelAdmin):
     list_display = ('nomor_antrian', 'pasien', 'jenis_layanan', 'status', 'prioritas', 'tanggal_daftar', 'dikelola_oleh')
     list_filter = ('status', 'jenis_layanan', 'prioritas', 'tanggal_daftar')
     search_fields = ('nomor_antrian', 'pasien__nama_lengkap', 'pasien__nrm')
-    readonly_fields = ('nomor_antrian', 'tanggal_daftar')
+    readonly_fields = ('nomor_antrian', 'tanggal_daftar', 'durasi_tunggu', 'durasi_layanan')
     ordering = ('-tanggal_daftar',)
+    list_editable = ('status', 'prioritas')
     
     fieldsets = (
         ('Informasi Antrian', {
             'fields': ('nomor_antrian', 'pasien', 'jenis_layanan', 'status', 'prioritas')
         }),
-        ('Waktu', {
-            'fields': ('tanggal_daftar', 'tanggal_panggil', 'tanggal_mulai', 'tanggal_selesai', 'estimasi_waktu_tunggu')
+        ('Waktu & Durasi', {
+            'fields': ('tanggal_daftar', 'tanggal_panggil', 'tanggal_mulai', 'tanggal_selesai', 'estimasi_waktu_tunggu', 'durasi_tunggu', 'durasi_layanan')
         }),
         ('Catatan & Pengelola', {
             'fields': ('catatan', 'dikelola_oleh')

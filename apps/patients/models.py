@@ -177,6 +177,8 @@ class Pasien(models.Model):
     @property
     def usia(self):
         """Hitung usia pasien dalam tahun"""
+        if not self.tanggal_lahir:
+            return 0
         today = date.today()
         usia_tahun = today.year - self.tanggal_lahir.year - (
             (today.month, today.day) < (self.tanggal_lahir.month, self.tanggal_lahir.day)
@@ -186,6 +188,8 @@ class Pasien(models.Model):
     @property
     def usia_bulan(self):
         """Hitung usia pasien dalam bulan (untuk bayi/balita)"""
+        if not self.tanggal_lahir:
+            return 0
         today = date.today()
         usia_bulan = (today.year - self.tanggal_lahir.year) * 12 + (
             today.month - self.tanggal_lahir.month

@@ -4,10 +4,10 @@ from .models import Pasien, RiwayatKunjungan
 
 @admin.register(Pasien)
 class PasienAdmin(admin.ModelAdmin):
-    list_display = ('nrm', 'nama_lengkap', 'nik', 'tanggal_lahir', 'jenis_kelamin', 'nama_wali', 'nomor_telepon_wali', 'status_aktif')
+    list_display = ('nrm', 'nama_lengkap', 'nik', 'tanggal_lahir', 'usia', 'jenis_kelamin', 'nama_wali', 'status_aktif')
     list_filter = ('jenis_kelamin', 'status_aktif', 'golongan_darah', 'tanggal_registrasi')
     search_fields = ('nrm', 'nama_lengkap', 'nik', 'nik_wali')
-    readonly_fields = ('nrm', 'tanggal_registrasi', 'tanggal_update_terakhir')
+    readonly_fields = ('nrm', 'tanggal_registrasi', 'tanggal_update_terakhir', 'usia', 'usia_bulan')
     ordering = ('nama_lengkap',)
     
     fieldsets = (
@@ -22,7 +22,7 @@ class PasienAdmin(admin.ModelAdmin):
             'fields': ('alamat_lengkap', 'rt_rw', 'kelurahan', 'kecamatan', 'kota', 'provinsi')
         }),
         ('Metadata', {
-            'fields': ('tanggal_registrasi', 'tanggal_update_terakhir'),
+            'fields': ('tanggal_registrasi', 'tanggal_update_terakhir', 'usia', 'usia_bulan'),
             'classes': ('collapse',)
         }),
     )
