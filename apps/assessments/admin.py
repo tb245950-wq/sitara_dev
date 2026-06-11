@@ -25,39 +25,26 @@ class AssessmentMedisAdmin(admin.ModelAdmin):
             'classes': ('collapse',)
         }),
     )
-    
-@admin.register(AssessmentMedis)
-class AssessmentMedisAdmin(admin.ModelAdmin):
-    # ... fieldsets dan list_display yang sudah ada ...
-    
-    # **RBAC: Pembatasan Akses**
+
+    # --- RBAC: Pembatasan Akses ---
     def has_add_permission(self, request):
-        # Hanya Dokter dan Admin yang bisa tambah assessment
+        # Hanya Admin dan Dokter yang bisa tambah assessment
         return request.user.is_superuser or request.user.role in ['admin', 'dokter']
     
     def has_change_permission(self, request, obj=None):
-        # Dokter dan Admin bisa edit
         return request.user.is_superuser or request.user.role in ['admin', 'dokter']
     
     def has_delete_permission(self, request, obj=None):
-        # Hanya Admin dan Superuser yang bisa hapus
+        # Hanya Admin yang bisa hapus
         return request.user.is_superuser or request.user.role == 'admin'
     
     def has_view_permission(self, request, obj=None):
-        # Semua role bisa lihat assessment
         return request.user.is_authenticated
     
-    # **Filter assessment yang ditampilkan berdasarkan role**
+    # Filter assessment yang ditampilkan berdasarkan role
     def get_queryset(self, request):
         qs = super().get_queryset(request)
-        
-        # Jika user adalah Dokter, hanya tampilkan assessment yang dia buat
+        # Jika Dokter, hanya tampilkan assessment yang dia buat
         if request.user.role == 'dokter' and not request.user.is_superuser:
             return qs.filter(dokter=request.user)
-        
-        # Jika user adalah Terapis, tampilkan semua (untuk referensi)
-        if request.user.role == 'terapis':
-            return qs
-        
-        # Admin lihat semua
         return qs
