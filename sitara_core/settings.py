@@ -155,3 +155,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # memastikan semua static files selalu di-collect dengan nama unik (untuk cache busting)
 STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
+
+AUTH_USER_MODEL = 'users.User'
