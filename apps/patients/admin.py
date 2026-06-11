@@ -26,19 +26,6 @@ class PasienAdmin(admin.ModelAdmin):
             'classes': ('collapse',)
         }),
     )
-
-
-@admin.register(RiwayatKunjungan)
-class RiwayatKunjunganAdmin(admin.ModelAdmin):
-    list_display = ('pasien', 'tanggal_kunjungan', 'tujuan_kunjungan')
-    list_filter = ('tanggal_kunjungan',)
-    search_fields = ('pasien__nama_lengkap', 'pasien__nrm', 'tujuan_kunjungan')
-    readonly_fields = ('tanggal_kunjungan',)
-    ordering = ('-tanggal_kunjungan',)
-    
-@admin.register(Pasien)
-class PasienAdmin(admin.ModelAdmin):
-    # ... fieldsets dan list_display yang sudah ada ...
     
     # **RBAC: Pembatasan Aksi**
     def has_add_permission(self, request):
@@ -56,3 +43,12 @@ class PasienAdmin(admin.ModelAdmin):
     def has_view_permission(self, request, obj=None):
         # Semua user login bisa lihat data pasien
         return request.user.is_authenticated
+
+
+@admin.register(RiwayatKunjungan)
+class RiwayatKunjunganAdmin(admin.ModelAdmin):
+    list_display = ('pasien', 'tanggal_kunjungan', 'tujuan_kunjungan')
+    list_filter = ('tanggal_kunjungan',)
+    search_fields = ('pasien__nama_lengkap', 'pasien__nrm', 'tujuan_kunjungan')
+    readonly_fields = ('tanggal_kunjungan',)
+    ordering = ('-tanggal_kunjungan',)
