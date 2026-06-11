@@ -47,3 +47,42 @@ class MonitoringTerapiAdmin(admin.ModelAdmin):
             'classes': ('collapse',)
         }),
     )
+    
+@admin.register(Terapi)
+class TerapiAdmin(admin.ModelAdmin):
+    # ... fieldsets dan list_display yang sudah ada ...
+    
+    # **RBAC: Pembatasan Akses**
+    def has_add_permission(self, request):
+        # Admin dan Dokter yang bisa jadwal terapi
+        return request.user.is_superuser or request.user.role in ['admin', 'dokter']
+    
+    def has_change_permission(self, request, obj=None):
+        # Terapis yang menangani bisa edit, Admin dan Dokter juga bisa
+        if request.user.is_superuser or request.user.role in ['admin', 'dokter']:
+            return True
+        if request.user.role == 'terapis' and obj:
+            return obj.terapis == request.user
+        return False
+    
+    def has_delete_permission(self, request, obj=None):
+        # Hanya Admin yang bisa hapus
+        return request.user.is_superuser or request.user.role == 'admin'
+    
+    def has_view_permission(self, request, obj=None):
+        return request.user.is_authenticated
+    
+    # **Filter terapi berdasarkan terapis yang login**
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        
+        # Terapis hanya lihat terapi yang ditanganinya
+        if request.user.role == 'terapis' and not request.user.is_superuser:
+            return qs.filter(terapis=request.user)
+        
+        # Dokter lihat semua terapi
+        if request.user.role == 'dokter':
+            return qs
+        
+        # Admin lihat semua
+        return qs

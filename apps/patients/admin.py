@@ -35,3 +35,24 @@ class RiwayatKunjunganAdmin(admin.ModelAdmin):
     search_fields = ('pasien__nama_lengkap', 'pasien__nrm', 'tujuan_kunjungan')
     readonly_fields = ('tanggal_kunjungan',)
     ordering = ('-tanggal_kunjungan',)
+    
+@admin.register(Pasien)
+class PasienAdmin(admin.ModelAdmin):
+    # ... fieldsets dan list_display yang sudah ada ...
+    
+    # **RBAC: Pembatasan Aksi**
+    def has_add_permission(self, request):
+        # Admin dan Dokter yang bisa registrasi pasien baru
+        return request.user.is_superuser or request.user.role in ['admin', 'dokter']
+    
+    def has_change_permission(self, request, obj=None):
+        # Semua role authenticated bisa edit (tergantung kebijakan)
+        return request.user.is_authenticated and request.user.is_active
+    
+    def has_delete_permission(self, request, obj=None):
+        # Hanya Admin yang bisa hapus pasien
+        return request.user.is_superuser or request.user.role == 'admin'
+    
+    def has_view_permission(self, request, obj=None):
+        # Semua user login bisa lihat data pasien
+        return request.user.is_authenticated

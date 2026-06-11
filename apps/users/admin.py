@@ -1,10 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
-from .models import User
-
-
-from django.contrib import admin
-from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
+from django.contrib.auth.models import Group
 from .models import User
 
 
@@ -15,7 +11,6 @@ class UserAdmin(BaseUserAdmin):
     search_fields = ('username', 'email', 'first_name', 'last_name', 'nomor_telepon')
     ordering = ('username',)
     
-    # Fieldsets untuk halaman EDIT (setelah user dibuat)
     fieldsets = (
         (None, {'fields': ('username', 'password')}),
         ('Informasi Pribadi', {'fields': ('first_name', 'last_name', 'email', 'nomor_telepon', 'foto_profil')}),
@@ -23,7 +18,6 @@ class UserAdmin(BaseUserAdmin):
         ('Timestamps', {'fields': ('tanggal_dibuat', 'tanggal_terakhir_login'), 'classes': ('collapse',)}),
     )
     
-    # Fieldsets untuk halaman ADD (saat membuat user baru) - INI YANG KURANG!
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
@@ -37,9 +31,22 @@ class UserAdmin(BaseUserAdmin):
                 'last_name', 
                 'nomor_telepon', 
                 'spesialisasi', 
-                'nomor_str'
+                'nomor_str',
             ),
         }),
     )
     
     readonly_fields = ('tanggal_dibuat', 'tanggal_terakhir_login')
+    
+    # **RBAC: Batasi siapa yang bisa manage User**
+    def has_add_permission(self, request):
+        # Hanya Admin dan Staff yang bisa tambah user
+        return request.user.is_superuser or request.user.role == 'admin'
+    
+    def has_change_permission(self, request, obj=None):
+        # Hanya Admin dan Staff yang bisa edit user
+        return request.user.is_superuser or request.user.role == 'admin'
+    
+    def has_delete_permission(self, request, obj=None):
+        # Hanya Superuser yang bisa hapus user
+        return request.user.is_superuser
