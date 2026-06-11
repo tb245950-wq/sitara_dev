@@ -21,12 +21,8 @@ class LaporanAdmin(admin.ModelAdmin):
             'fields': ('file_pdf', 'tanggal_dibuat', 'tanggal_diupdate', 'tanggal_dikirim')
         }),
     )
-    
-@admin.register(Laporan)
-class LaporanAdmin(admin.ModelAdmin):
-    # ... fieldsets dan list_display yang sudah ada ...
-    
-    # **RBAC: Hanya Admin yang bisa akses Laporan**
+
+    # --- RBAC: Hanya Admin yang bisa akses Laporan ---
     def has_add_permission(self, request):
         return request.user.is_superuser or request.user.role == 'admin'
     
@@ -37,5 +33,4 @@ class LaporanAdmin(admin.ModelAdmin):
         return request.user.is_superuser or request.user.role == 'admin'
     
     def has_view_permission(self, request, obj=None):
-        # Dokter dan Admin bisa lihat laporan
         return request.user.is_authenticated and request.user.role in ['admin', 'dokter']
